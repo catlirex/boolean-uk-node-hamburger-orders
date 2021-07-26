@@ -7,7 +7,15 @@ hamburgersRouter.get("/", (req, res) => {
 
   if (Object.keys(queryContent).length === 0)
     res.json({ HamburgerList: burgerList });
-  else res.json({ error: "No query accepted" });
+  if (!Object.keys(queryContent).some((key) => key === "with"))
+    res.json({ Error: "Query not found" });
+  if (queryContent.with) {
+    let filterBurgerList = burgerList.filter((target) =>
+      target.ingredients.some((ingredient) => ingredient === queryContent.with)
+    );
+
+    res.json({ filterBurgerList });
+  }
 });
 
 hamburgersRouter.post("/", (req, res) => {

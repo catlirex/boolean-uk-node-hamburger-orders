@@ -10,6 +10,17 @@ ordersRouter.get("/", (req, res) => {
   else res.json({ error: "No query accepted" });
 });
 
+ordersRouter.get("/criticals", (req, res) => {
+  const { ordersList } = req.ordersDB;
+  let currentTime = Date.now();
+  let urgentList = ordersList.filter(
+    (target) =>
+      target.status === "pending" && currentTime - target.created_at > 600000
+  );
+
+  res.json({ UrgentOrder: urgentList });
+});
+
 ordersRouter.post("/", (req, res) => {
   const { postOrder, ordersList } = req.ordersDB;
   const { burgerList, patchBurger } = req.hamburgersDB;
